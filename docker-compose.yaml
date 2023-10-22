@@ -1,0 +1,22 @@
+
+services:
+  postgres:
+    container_name: student-service-postgres
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: student
+    ports:
+      - 5432:5432
+    volumes:
+      - ./postgres:/data/postgres
+
+  pgadmin:
+    container_name: student-service-pgadmin
+    image: dpage/pgadmin4:latest
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@pgadmin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - 7070:80
