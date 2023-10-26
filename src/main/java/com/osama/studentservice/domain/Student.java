@@ -17,7 +17,7 @@ public class Student {
 
     private int age;
 
-    @Email
+    @Email(message = "Invalid email")
     private String email;
 
     private String password;
