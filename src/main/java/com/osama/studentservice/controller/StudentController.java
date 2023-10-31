@@ -4,7 +4,9 @@ import com.osama.studentservice.dao.StudentDao;
 import com.osama.studentservice.domain.Student;
 import com.osama.studentservice.domain.StudentCard;
 import com.osama.studentservice.exception.ResourceNotFoundException;
+import com.osama.studentservice.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +22,9 @@ public class StudentController {
     @Autowired
     private StudentDao studentDao;
 
+    @Autowired
+    private StudentService studentService;
+
     @GetMapping()
     public List<Student> getStudents() {
         return studentDao.findAll();
@@ -32,6 +37,7 @@ public class StudentController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public void saveStudent(@Validated @RequestBody Student student) {
         StudentCard studentCard = new StudentCard(UUID.randomUUID(), new Date(), new Date());
         student.setStudentCard(studentCard);
@@ -42,5 +48,19 @@ public class StudentController {
     public void deleteStudent(@PathVariable("id") int id) {
         Optional<Student> student = studentDao.findById(id);
         student.ifPresent(value -> studentDao.delete(value));
+    }
+
+    @PostMapping("enroll-course/{studentId}/{courseId}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void enrollStudentInCourse(@PathVariable int studentId,
+                                      @PathVariable int courseId) {
+        studentService.enrollStudentToCourse(studentId, courseId);
+    }
+
+    @PostMapping("/assign-book/{studentId}/{bookId}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void assignBookToStudent(@PathVariable int studentId,
+                                      @PathVariable int bookId) {
+        studentService.assignBook(studentId, bookId);
     }
 }
